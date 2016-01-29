@@ -31,7 +31,7 @@ sp.payment().status().get()
 
 sp.payment().cancel_preauthorized_payment(token='1234').get()
 sp.payment().capture_preauthorized_payment(token='1234').get()
-
+```
 
 ToDo
 ----
