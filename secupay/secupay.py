@@ -8,6 +8,9 @@ logger = logging.getLogger('secupay')
 
 SUPPORTED_LANGUAGES = (('de_DE', 'Deutsch'), ('en_US', 'English'))
 
+class BadApiServesHTMLInsteadOfJsonExcepton(Exception):
+    message = 'This api, is misconfigured. It serves HTML instead of a valid api format (json)'
+
 
 class Session(object):
     """
@@ -37,6 +40,7 @@ class DevelopmentSession(Session):
 
 class BaseApi(object):
     r = requests
+    http_methods_allowed = ['get', 'post', 'patch', 'put', 'delete']
 
     def __init__(self, session, **kwargs):
         self.session = session
@@ -83,9 +87,19 @@ class BaseApi(object):
 
     def process(self, response):
         self.response = response
+
         if response.ok is True:
-            self.response_json = self.response.json()
-            return self.response_json
+
+            try:
+                self.response_json = self.response.json()
+                return self.response_json
+
+            except ValueError as e:
+                if e.message == 'No JSON object could be decoded':
+                    raise BadApiServesHTMLInsteadOfJsonExcepton
+                else:
+                    raise Exception(e.message)
+
         #
         # Handle the bad CLI api implementation of 404 returning HTML and not
         # a valid REST reponse
@@ -93,37 +107,39 @@ class BaseApi(object):
         return {'message': response.reason, 'ok': response.ok, 'status_code': response.status_code, 'url': response.url}
 
     def get(self, **kwargs):
-        print self.endpoint()
+        if 'get' not in self.http_methods_allowed:
+            raise Exception('Method not allowed')
+
         return self.process(response=self.r.get(self.endpoint(), headers=self.headers(), params=kwargs))
 
     def post(self, **kwargs):
-        print self.wrap_namespace(**kwargs)
+        if 'post' not in self.http_methods_allowed:
+            raise Exception('Method not allowed')
+
         return self.process(response=self.r.post(self.endpoint(), headers=self.headers(), data=self.wrap_namespace(**kwargs)))
 
     def put(self, **kwargs):
+        if 'put' not in self.http_methods_allowed:
+            raise Exception('Method not allowed')
+
         return self.process(response=self.r.put(self.endpoint(), headers=self.headers(), data=self.wrap_namespace(**kwargs)))
 
     def patch(self, **kwargs):
+        if 'patch' not in self.http_methods_allowed:
+            raise Exception('Method not allowed')
+
         return self.process(response=self.r.patch(self.endpoint(), headers=self.headers(), data=self.wrap_namespace(**kwargs)))
 
     def delete(self, **kwargs):
+        if 'delete' not in self.http_methods_allowed:
+            raise Exception('Method not allowed')
+
         return self.process(response=self.r.delete(self.endpoint(), headers=self.headers(), params=kwargs))
 
 
 class PaymentTypes(BaseApi):
     uri = 'payment/gettypes'
-
-    def post(self, **kwargs):
-        raise Exception('Not implemented for this %s' % self.__class__.__name__)
-
-    def put(self, **kwargs):
-        raise Exception('Not implemented for this %s' % self.__class__.__name__)
-
-    def patch(self, **kwargs):
-        raise Exception('Not implemented for this %s' % self.__class__.__name__)
-
-    def delete(self, **kwargs):
-        raise Exception('Not implemented for this %s' % self.__class__.__name__)
+    http_methods_allowed = ['get']
 
 
 class Payment(BaseApi):
