@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import re
 import json
 import requests
@@ -6,11 +7,14 @@ import urlparse
 import logging
 logger = logging.getLogger('secupay')
 
-SUPPORTED_LANGUAGES = (('de_DE', 'Deutsch'), ('en_US', 'English'))
+SUPPORTED_LANGUAGES = (
+    ('de_DE', 'Deutsch'),
+    ('en_US', 'English')
+)
 
 
 class BadApiServesHTMLInsteadOfJsonExcepton(Exception):
-    message = 'This api, is misconfigured. It serves HTML instead of a valid api format (json)'
+    message = 'This api, is misconfigured. It serves HTML instead of a valid api format (json) as a response'
 
 
 class Session(object):
@@ -23,6 +27,8 @@ class Session(object):
 
     def __init__(self, token, **kwargs):
         self.token = token
+        # We default to english as translation should be the responsibility
+        # of the implementing client, not the provider
         self.language = kwargs.pop('lang', 'en_US')
 
     @property
@@ -72,11 +78,16 @@ class BaseApi(object):
         return re.sub(r'\/\:(\w)+', '', uri)
 
     def headers(self, **kwargs):
+        # We ONLY talk json, XML is very 1995 ;)
         headers = {'Content-Type': 'application/json; charset=utf-8;'}
         headers.update(kwargs)
         return headers
 
     def wrap_namespace(self, **kwargs):
+        """
+        Wrap all posted data in the structure that SecuPay expects
+        A flat dict with all the attributes just kinda mixed in there
+        """
         kwargs.update({
             'apikey': self.token,
             'demo': self.session.demo
@@ -105,37 +116,50 @@ class BaseApi(object):
         # Handle the bad CLI api implementation of 404 returning HTML and not
         # a valid REST reponse
         #
-        return {'message': response.reason, 'ok': response.ok, 'status_code': response.status_code, 'url': response.url}
+        return {'message': response.reason,
+                'ok': response.ok,
+                'status_code': response.status_code,
+                'url': response.url}
 
     def get(self, **kwargs):
         if 'get' not in self.http_methods_allowed:
             raise Exception('Method not allowed')
 
-        return self.process(response=self.r.get(self.endpoint(), headers=self.headers(), params=kwargs))
+        return self.process(response=self.r.get(self.endpoint(),
+                            headers=self.headers(),
+                            params=kwargs))
 
     def post(self, **kwargs):
         if 'post' not in self.http_methods_allowed:
             raise Exception('Method not allowed')
 
-        return self.process(response=self.r.post(self.endpoint(), headers=self.headers(), data=self.wrap_namespace(**kwargs)))
+        return self.process(response=self.r.post(self.endpoint(),
+                            headers=self.headers(),
+                            data=self.wrap_namespace(**kwargs)))
 
     def put(self, **kwargs):
         if 'put' not in self.http_methods_allowed:
             raise Exception('Method not allowed')
 
-        return self.process(response=self.r.put(self.endpoint(), headers=self.headers(), data=self.wrap_namespace(**kwargs)))
+        return self.process(response=self.r.put(self.endpoint(),
+                            headers=self.headers(),
+                            data=self.wrap_namespace(**kwargs)))
 
     def patch(self, **kwargs):
         if 'patch' not in self.http_methods_allowed:
             raise Exception('Method not allowed')
 
-        return self.process(response=self.r.patch(self.endpoint(), headers=self.headers(), data=self.wrap_namespace(**kwargs)))
+        return self.process(response=self.r.patch(self.endpoint(),
+                            headers=self.headers(),
+                            data=self.wrap_namespace(**kwargs)))
 
     def delete(self, **kwargs):
         if 'delete' not in self.http_methods_allowed:
             raise Exception('Method not allowed')
 
-        return self.process(response=self.r.delete(self.endpoint(), headers=self.headers(), params=kwargs))
+        return self.process(response=self.r.delete(self.endpoint(),
+                            headers=self.headers(),
+                            params=kwargs))
 
 
 class PaymentTypes(BaseApi):
@@ -165,24 +189,3 @@ class Payment(BaseApi):
     def cancel_preauthorized_payment(self, token):
         return self.CancelPreAuthorizedPayment(session=self.session,
                                                hash=token)
-
-    # class Invoice(BaseApi):
-    #     uri = 'payment/:hash/cancel'
-
-
-# class Documents(BaseApi):
-#     uri = 'documents/:id'
-
-#     def wrap_namespace(self, **kwargs):
-#         return {'document': kwargs}
-
-#     def document_versions(self):
-#         return self.response_json.get('document', {}).get('document_versions', self.get().get('document', {}).get('document_versions',[]))
-
-#     def download_version(self, version_id):
-#         download = self.DownloadVersion(token=self.token, id=self.response_json.get('document', {}).get('id'), document_version=version_id)
-#         return download.get()
-
-#     class DownloadVersion(BaseApi):
-#         uri = 'documents/:id/document_version/:document_version/download'
-
