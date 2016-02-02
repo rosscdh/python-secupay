@@ -89,7 +89,7 @@ class BaseApi(object):
         """
         kwargs.update({
             'apikey': self.token,
-            'demo': self.session.demo
+            'demo': self.session.demo.real  # Send as 0 or 1
         })
         return json.dumps({'data': kwargs})
 
@@ -168,6 +168,23 @@ class PaymentTypes(BaseApi):
 
 class Payment(BaseApi):
     uri = 'payment/init'
+
+    def make_payment(self, amount, payment_type, url_success, url_failure, url_push, **kwargs):
+        """
+        Make a request for payment,
+        expect to get a data object back that contains an iframe that the user
+        can confirm their payment with
+        """
+        send_data = {
+            'amount': amount,
+            'payment_type': payment_type,
+            'url_success': url_success,
+            'url_failure': url_failure,
+            'url_push': url_push,
+        }
+        send_data.update(kwargs)
+
+        return self.post(**send_data)
 
     class Status(BaseApi):
         uri = 'payment/status'

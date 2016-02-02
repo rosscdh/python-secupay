@@ -25,6 +25,14 @@ def test_payment():
     assert subject.payment().uri == 'payment/init'
 
 
+def test_make_payment():
+    assert subject.payment().make_payment(amount=25.00,
+                                          payment_type='debit',
+                                          url_success='http://localhost/payment/success/',
+                                          url_failure='http://localhost/payment/fail/',
+                                          url_push='http://localhost/payment/status/') == {}
+
+
 def test_payment_capture_preauthorized_payment():
     assert subject.payment().capture_preauthorized_payment(token='preauthtoken').__class__.__name__ == 'CapturePreAuthorizedPayment'
     assert subject.payment().capture_preauthorized_payment(token='preauthtoken').uri == 'payment/:hash/capture'
