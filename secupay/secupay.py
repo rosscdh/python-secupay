@@ -8,6 +8,7 @@ logger = logging.getLogger('secupay')
 
 SUPPORTED_LANGUAGES = (('de_DE', 'Deutsch'), ('en_US', 'English'))
 
+
 class BadApiServesHTMLInsteadOfJsonExcepton(Exception):
     message = 'This api, is misconfigured. It serves HTML instead of a valid api format (json)'
 

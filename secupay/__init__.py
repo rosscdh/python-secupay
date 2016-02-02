@@ -18,7 +18,11 @@ class SecuPay(BaseApi):
     """
     Generic wrapper object, to access the complex underlying object
     """
-    def payment_types(self, **kwargs):
+    def __init__(self, settings):
+        self.settings = settings
+        self.session = get_session(self.settings)
+
+    def payment_types(self):
         return PaymentTypes(session=self.session)
 
     def payment(self, **kwargs):
