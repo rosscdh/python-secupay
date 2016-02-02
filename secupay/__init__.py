@@ -7,7 +7,6 @@ def get_session(settings):
     debug = getattr(settings, 'DEBUG', settings.get('DEBUG', True))
     secupay_debug = getattr(settings, 'SECUPAY_DEBUG', settings.get('SECUPAY_DEBUG', True))
     language = getattr(settings, 'SECUPAY_LANGUAGE', settings.get('SECUPAY_LANGUAGE', 'en_US'))
-
     token = getattr(settings, 'SECUPAY_TOKEN', settings.get('SECUPAY_TOKEN', None))
 
     assert token is not None, 'You must provide a SECUPAY_TOKEN in the settings passed into secupay.get_session(settings)'
