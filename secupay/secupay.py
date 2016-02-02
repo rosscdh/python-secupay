@@ -23,18 +23,16 @@ class Session(object):
     """
     site = 'https://api.secupay.ag/'
     token = None
-    demo = "0"
+    debug = False
+    demo = False
 
     def __init__(self, token, **kwargs):
         self.token = token
         # We default to english as translation should be the responsibility
         # of the implementing client, not the provider
-        self.language = kwargs.pop('lang', 'en_US')
-
-    @property
-    def auth_url(self):
-        return self.client.authorize_url(self.authorization_url,
-                                         response_type=self.response_type)
+        self.language = kwargs.pop('language', 'en_US')
+        self.debug = kwargs.pop('debug', True)
+        self.demo = kwargs.pop('secupay_debug', True)
 
 
 class DevelopmentSession(Session):
@@ -42,7 +40,8 @@ class DevelopmentSession(Session):
     Class to handle development test api requests.
     """
     site = 'https://api-dist.secupay-ag.de/'
-    demo = "1"
+    debug = True
+    demo = True
 
 
 class BaseApi(object):

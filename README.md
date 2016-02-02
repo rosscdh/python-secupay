@@ -26,7 +26,7 @@ python setup.py install
 # SECUPAY_TOKEN = '<string api from the secupay website>'
 #
 from django.conf import settings
-from secupay import get_session, SecuPay
+from secupay import SecuPay
 
 sp = SecuPay(settings=settings)
 
@@ -37,6 +37,16 @@ sp.payment().status().get()
 
 sp.payment().cancel_preauthorized_payment(token='1234').get()
 sp.payment().capture_preauthorized_payment(token='1234').get()
+```
+
+
+
+## Tests
+
+We use py.test
+
+```
+py.test tests
 ```
 
 ToDo

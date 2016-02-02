@@ -4,14 +4,25 @@ from .secupay import BaseApi, Payment, PaymentTypes
 
 
 def get_session(settings):
-    secupay_debug = getattr(settings, 'SECUPAY_DEBUG', True)
-    token = getattr(settings, 'SECUPAY_TOKEN', None)
+    debug = getattr(settings, 'DEBUG', settings.get('DEBUG', True))
+    secupay_debug = getattr(settings, 'SECUPAY_DEBUG', settings.get('SECUPAY_DEBUG', True))
+    language = getattr(settings, 'SECUPAY_LANGUAGE', settings.get('SECUPAY_LANGUAGE', 'en_US'))
+
+    token = getattr(settings, 'SECUPAY_TOKEN', settings.get('SECUPAY_TOKEN', None))
 
     assert token is not None, 'You must provide a SECUPAY_TOKEN in the settings passed into secupay.get_session(settings)'
 
-    if settings.DEBUG is False and secupay_debug is False:
-        return Session(token=token)
-    return DevelopmentSession(token=token)
+    if debug is False:
+
+        return Session(token=token,
+                       debug=debug,
+                       secupay_debug=secupay_debug,
+                       language=language)
+
+    return DevelopmentSession(token=token,
+                              debug=debug,
+                              secupay_debug=secupay_debug,
+                              language=language)
 
 
 class SecuPay(BaseApi):
