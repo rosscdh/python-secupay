@@ -79,7 +79,7 @@ We use py.test
 py.test                                                                                                  rosscdh@s
 ================================================ test session starts ================================================
 platform darwin -- Python 2.7.5, pytest-2.8.7, py-1.4.31, pluggy-0.3.1
-rootdir: /Users/rosscdh/p/stefano/vendors/python-secupay, inifile:
+rootdir: /Users/rosscdh/p/s/vendors/python-secupay, inifile:
 collected 8 items
 
 tests/test_base.py ....
