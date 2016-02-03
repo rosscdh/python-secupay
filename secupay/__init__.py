@@ -4,23 +4,28 @@ from .secupay import BaseApi, Payment, PaymentTypes
 
 
 def get_session(settings):
-    debug = getattr(settings, 'DEBUG', settings.get('DEBUG', True))
-    secupay_debug = getattr(settings, 'SECUPAY_DEBUG', settings.get('SECUPAY_DEBUG', True))
-    language = getattr(settings, 'SECUPAY_LANGUAGE', settings.get('SECUPAY_LANGUAGE', 'en_US'))
-    token = getattr(settings, 'SECUPAY_TOKEN', settings.get('SECUPAY_TOKEN', None))
+    if type(settings) is dict:
+        debug = settings.get('DEBUG', True)
+        secupay_debug = settings.get('SECUPAY_DEBUG', True)
+        language = settings.get('SECUPAY_LANGUAGE', 'en_US')
+        token = settings.get('SECUPAY_TOKEN', None)
+    else:
+        debug = getattr(settings, 'DEBUG', True)
+        secupay_debug = getattr(settings, 'SECUPAY_DEBUG', True)
+        language = getattr(settings, 'SECUPAY_LANGUAGE', 'en_US')
+        token = getattr(settings, 'SECUPAY_TOKEN', None)
 
     SECUPAY_LABELS = getattr(settings, 'SECUPAY_LABELS', {
-      "en_US": {
-        "basket_title": "Your Order",
-        "submit_button_title": "Submit",
-        "cancel_button_title": "Return to Basket"
-      },
-      "de_DE": {
-        "basket_title": "Ihre Bestellung",
-        "submit_button_title": "Daten Ubermitteln",
-        "cancel_button_title": "Zum Warenkorb"
-      }
-
+        "en_US": {
+            "basket_title": "Your Order",
+            "submit_button_title": "Submit",
+            "cancel_button_title": "Return to Basket"
+        },
+        "de_DE": {
+            "basket_title": "Ihre Bestellung",
+            "submit_button_title": "Daten Ubermitteln",
+            "cancel_button_title": "Zum Warenkorb"
+        }
     })
 
     assert token is not None, 'You must provide a SECUPAY_TOKEN in the settings passed into secupay.get_session(settings)'

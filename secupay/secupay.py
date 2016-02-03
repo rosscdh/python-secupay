@@ -79,7 +79,10 @@ class BaseApi(object):
 
     def headers(self, **kwargs):
         # We ONLY talk json, XML is very 1995 ;)
-        headers = {'Content-Type': 'application/json; charset=utf-8;'}
+        headers = {
+            'Content-Type': 'application/json; charset=utf-8;',
+            'Accept': 'application/json;'
+        }
         headers.update(kwargs)
         return headers
 
