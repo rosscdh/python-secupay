@@ -19,4 +19,4 @@ def test_wrap_namespace():
 
 
 def test_headers():
-    assert subject.payment().headers() == {'Content-Type': 'application/json; charset=utf-8;'}
+    assert subject.payment().headers() == {'Accept': 'application/json;', 'Content-Type': 'application/json; charset=utf-8;'}
