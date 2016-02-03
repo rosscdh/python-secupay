@@ -76,16 +76,26 @@ sp.payment().capture_preauthorized_payment(token='1234').get()
 We use py.test
 
 ```
-py.test                                                                                                  rosscdh@s
-================================================ test session starts ================================================
-platform darwin -- Python 2.7.5, pytest-2.8.7, py-1.4.31, pluggy-0.3.1
-rootdir: /Users/rosscdh/p/s/vendors/python-secupay, inifile:
-collected 8 items
+py.test -vvv                                                                                                                                                                                                                      rosscdh@s
+============================================================================================================ test session starts =============================================================================================================
+platform darwin -- Python 2.7.5, pytest-2.8.7, py-1.4.31, pluggy-0.3.1 -- /Users/rosscdh/.virtualenvs/elbow/bin/python
+cachedir: .cache
+rootdir: /Users/rosscdh/p/stefano/vendors/python-secupay, inifile:
+collected 11 items
 
-tests/test_base.py ....
-tests/test_session.py ....
+tests/test_base.py::test_make_payment <- ../../../../.virtualenvs/elbow/lib/python2.7/site-packages/httpretty/core.py PASSED
+tests/test_base.py::test_payment_types PASSED
+tests/test_base.py::test_payment PASSED
+tests/test_base.py::test_payment_capture_preauthorized_payment PASSED
+tests/test_base.py::test_payment_cancel_preauthorized_payment PASSED
+tests/test_core.py::test_wrap_namespace PASSED
+tests/test_core.py::test_headers PASSED
+tests/test_session.py::test_dev_settings PASSED
+tests/test_session.py::test_prod_settings PASSED
+tests/test_session.py::test_prod_settings_with_demo_true PASSED
+tests/test_session.py::test_prod_settings_with_language_german PASSED
 
-============================================= 8 passed in 0.10 seconds ==============================================
+========================================================================================================= 11 passed in 0.25 seconds =========================================================================================================
 ```
 
 ToDo
