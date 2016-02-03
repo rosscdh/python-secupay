@@ -9,6 +9,20 @@ def get_session(settings):
     language = getattr(settings, 'SECUPAY_LANGUAGE', settings.get('SECUPAY_LANGUAGE', 'en_US'))
     token = getattr(settings, 'SECUPAY_TOKEN', settings.get('SECUPAY_TOKEN', None))
 
+    SECUPAY_LABELS = getattr(settings, 'SECUPAY_LABELS', {
+      "en_US": {
+        "basket_title": "Your Order",
+        "submit_button_title": "Submit",
+        "cancel_button_title": "Return to Basket"
+      },
+      "de_DE": {
+        "basket_title": "Ihre Bestellung",
+        "submit_button_title": "Daten Ubermitteln",
+        "cancel_button_title": "Zum Warenkorb"
+      }
+
+    })
+
     assert token is not None, 'You must provide a SECUPAY_TOKEN in the settings passed into secupay.get_session(settings)'
 
     if debug is False:
@@ -16,12 +30,14 @@ def get_session(settings):
         return Session(token=token,
                        debug=debug,
                        secupay_debug=secupay_debug,
-                       language=language)
+                       language=language,
+                       SECUPAY_LABELS=SECUPAY_LABELS)
 
     return DevelopmentSession(token=token,
                               debug=debug,
                               secupay_debug=secupay_debug,
-                              language=language)
+                              language=language,
+                              SECUPAY_LABELS=SECUPAY_LABELS)
 
 
 class SecuPay(BaseApi):

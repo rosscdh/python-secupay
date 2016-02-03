@@ -33,6 +33,7 @@ class Session(object):
         self.language = kwargs.pop('language', 'en_US')
         self.debug = kwargs.pop('debug', True)
         self.demo = kwargs.pop('secupay_debug', True)
+        self.labels = kwargs.pop('SECUPAY_LABELS', None)
 
 
 class DevelopmentSession(Session):
@@ -175,16 +176,17 @@ class Payment(BaseApi):
         expect to get a data object back that contains an iframe that the user
         can confirm their payment with
         """
-        send_data = {
+        self.send_data = {
             'amount': amount,
             'payment_type': payment_type,
             'url_success': url_success,
             'url_failure': url_failure,
             'url_push': url_push,
+            'labels': self.session.labels,
         }
-        send_data.update(kwargs)
+        self.send_data.update(kwargs)
 
-        return self.post(**send_data)
+        return self.post(**self.send_data)
 
     class Status(BaseApi):
         uri = 'payment/status'
