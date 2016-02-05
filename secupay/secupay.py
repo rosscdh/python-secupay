@@ -173,6 +173,18 @@ class PaymentTypes(BaseApi):
 class Payment(BaseApi):
     uri = 'payment/init'
 
+    def to_cents(self, amount):
+        amount = str(amount).split('.')
+
+        dollar = int(amount[0])
+
+        try:
+            cents = int(amount[1])
+        except:
+            cents = 0
+
+        return (dollar * 100) + cents
+
     def make_payment(self, amount, payment_type, url_success, url_failure, url_push, **kwargs):
         """
         Make a request for payment,
@@ -180,7 +192,7 @@ class Payment(BaseApi):
         can confirm their payment with
         """
         self.send_data = {
-            'amount': amount,
+            'amount': self.to_cents(amount=amount),
             'payment_type': payment_type,
             'url_success': url_success,
             'url_failure': url_failure,

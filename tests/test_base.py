@@ -53,7 +53,7 @@ def test_make_payment():
 
     assert response == expected_response
 
-    expected_posted_data = {'amount': 25.0,
+    expected_posted_data = {'amount': 2500,
                             'labels': {'de_DE': {'basket_title': 'Ihre Bestellung',
                                                  'cancel_button_title': 'Zum Warenkorb',
                                                  'submit_button_title': 'Daten Ubermitteln'},
