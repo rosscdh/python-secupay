@@ -2,15 +2,15 @@
 from secupay import SecuPay
 
 DEV_SETTINGS = {
-    'DEBUG': True,
-    'SECUPAY_DEBUG': True,
+    'SECUPAY_DEVELOPMENT': True,
+    'SECUPAY_DEMO': True,
     'SECUPAY_TOKEN': '12345',
 }
 
 PROD_SETTINGS = DEV_SETTINGS.copy()
 PROD_SETTINGS.update({
-    'DEBUG': False,
-    'SECUPAY_DEBUG': False,
+    'SECUPAY_DEVELOPMENT': False,
+    'SECUPAY_DEMO': False,
 })
 
 sp_dev = SecuPay(settings=DEV_SETTINGS)
@@ -22,8 +22,8 @@ def test_dev_settings():
     assert sp_dev.session.site == 'https://api-dist.secupay-ag.de/'
     assert sp_prod.session.token is '12345'
     assert sp_prod.session.language is 'en_US'
-    assert sp_dev.session.debug is True
-    assert sp_dev.session.demo is True
+    assert sp_dev.session.is_development is True
+    assert sp_dev.session.is_demo is True
 
 
 def test_prod_settings():
@@ -31,15 +31,15 @@ def test_prod_settings():
     assert sp_prod.session.site == 'https://api.secupay.ag/'
     assert sp_prod.session.token is '12345'
     assert sp_prod.session.language is 'en_US'
-    assert sp_prod.session.debug is False
-    assert sp_prod.session.demo is False
+    assert sp_prod.session.is_development is False
+    assert sp_prod.session.is_demo is False
 
 
 def test_prod_settings_with_demo_true():
     prod_settings = DEV_SETTINGS.copy()
     prod_settings.update({
-        'DEBUG': False,
-        'SECUPAY_DEBUG': True,
+        'SECUPAY_DEVELOPMENT': False,
+        'SECUPAY_DEMO': True,
     })
 
     subject = SecuPay(settings=prod_settings)
@@ -47,15 +47,15 @@ def test_prod_settings_with_demo_true():
     assert subject.session.site == 'https://api.secupay.ag/'
     assert sp_prod.session.token is '12345'
     assert sp_prod.session.language is 'en_US'
-    assert subject.session.debug is False
-    assert subject.session.demo is True
+    assert subject.session.is_development is False
+    assert subject.session.is_demo is True
 
 
 def test_prod_settings_with_language_german():
     prod_settings = DEV_SETTINGS.copy()
     prod_settings.update({
-        'DEBUG': False,
-        'SECUPAY_DEBUG': True,
+        'SECUPAY_DEVELOPMENT': False,
+        'SECUPAY_DEMO': True,
         'SECUPAY_LANGUAGE': 'de_DE',
     })
 
@@ -64,5 +64,5 @@ def test_prod_settings_with_language_german():
     assert subject.session.site == 'https://api.secupay.ag/'
     assert subject.session.token is '12345'
     assert subject.session.language is 'de_DE'
-    assert subject.session.debug is False
-    assert subject.session.demo is True
+    assert subject.session.is_development is False
+    assert subject.session.is_demo is True

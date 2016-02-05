@@ -5,13 +5,13 @@ from .secupay import BaseApi, Payment, PaymentTypes
 
 def get_session(settings):
     if type(settings) is dict:
-        debug = settings.get('DEBUG', True)
-        secupay_debug = settings.get('SECUPAY_DEBUG', True)
+        is_development = settings.get('SECUPAY_DEVELOPMENT', True)
+        is_demo = settings.get('SECUPAY_DEMO', True)
         language = settings.get('SECUPAY_LANGUAGE', 'en_US')
         token = settings.get('SECUPAY_TOKEN', None)
     else:
-        debug = getattr(settings, 'DEBUG', True)
-        secupay_debug = getattr(settings, 'SECUPAY_DEBUG', True)
+        is_development = getattr(settings, 'SECUPAY_DEVELOPMENT', True)
+        is_demo = getattr(settings, 'SECUPAY_DEMO', True)
         language = getattr(settings, 'SECUPAY_LANGUAGE', 'en_US')
         token = getattr(settings, 'SECUPAY_TOKEN', None)
 
@@ -30,17 +30,17 @@ def get_session(settings):
 
     assert token is not None, 'You must provide a SECUPAY_TOKEN in the settings passed into secupay.get_session(settings)'
 
-    if debug is False:
+    if is_development is False:
 
         return Session(token=token,
-                       debug=debug,
-                       secupay_debug=secupay_debug,
+                       is_development=False,
+                       is_demo=is_demo,
                        language=language,
                        SECUPAY_LABELS=SECUPAY_LABELS)
 
     return DevelopmentSession(token=token,
-                              debug=debug,
-                              secupay_debug=secupay_debug,
+                              is_development=True,
+                              is_demo=is_demo,
                               language=language,
                               SECUPAY_LABELS=SECUPAY_LABELS)
 

@@ -6,8 +6,8 @@ import httpretty
 from secupay import SecuPay
 
 DEV_SETTINGS = {
-    'DEBUG': True,
-    'SECUPAY_DEBUG': True,
+    'SECUPAY_DEVELOPMENT': True,
+    'SECUPAY_DEMO': True,
     'SECUPAY_TOKEN': '12345',
 }
 

@@ -23,16 +23,16 @@ class Session(object):
     """
     site = 'https://api.secupay.ag/'
     token = None
-    debug = False
-    demo = False
+    is_development = False
+    is_demo = False
 
     def __init__(self, token, **kwargs):
         self.token = token
         # We default to english as translation should be the responsibility
         # of the implementing client, not the provider
         self.language = kwargs.pop('language', 'en_US')
-        self.debug = kwargs.pop('debug', True)
-        self.demo = kwargs.pop('secupay_debug', True)
+        self.is_development = kwargs.pop('is_development', True)
+        self.is_demo = kwargs.pop('is_demo', True)
         self.labels = kwargs.pop('SECUPAY_LABELS', None)
 
 
@@ -41,8 +41,8 @@ class DevelopmentSession(Session):
     Class to handle development test api requests.
     """
     site = 'https://api-dist.secupay-ag.de/'
-    debug = True
-    demo = True
+    is_development = True
+    is_demo = True
 
 
 class BaseApi(object):
@@ -93,7 +93,7 @@ class BaseApi(object):
         """
         kwargs.update({
             'apikey': self.token,
-            'demo': self.session.demo.real  # Send as 0 or 1
+            'demo': self.session.is_demo.real  # Convert bool to 0 or 1 for php api
         })
         return json.dumps({'data': kwargs})
 
