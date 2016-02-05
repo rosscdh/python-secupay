@@ -17,6 +17,9 @@ class BadApiServesHTMLInsteadOfJsonExcepton(Exception):
     message = 'This api, is misconfigured. It serves HTML instead of a valid api format (json) as a response'
 
 
+class InvalidApiResponse(Exception): pass
+
+
 class Session(object):
     """
     Session object
@@ -111,18 +114,15 @@ class BaseApi(object):
 
             except ValueError as e:
                 if e.message == 'No JSON object could be decoded':
-                    raise BadApiServesHTMLInsteadOfJsonExcepton
+                    raise BadApiServesHTMLInsteadOfJsonExcepton(e.message)
                 else:
-                    raise Exception(e.message)
+                    raise InvalidApiResponse(e.message)
 
         #
         # Handle the bad CLI api implementation of 404 returning HTML and not
         # a valid REST reponse
         #
-        return {'message': response.reason,
-                'ok': response.ok,
-                'status_code': response.status_code,
-                'url': response.url}
+        raise InvalidApiResponse('Secupay Api returned (%s) an invalid response: %s %s' % (response.status_code, response.url, response.content))
 
     def get(self, **kwargs):
         if 'get' not in self.http_methods_allowed:
