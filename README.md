@@ -30,7 +30,7 @@ from secupay import SecuPay
 
 sp = SecuPay(settings=settings)
 
-sp.payment_types().get()  # List of payment types
+sp.payment_types()  # List of payment types
 
 # Make a Payment
 

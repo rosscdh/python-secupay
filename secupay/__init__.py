@@ -54,7 +54,7 @@ class SecuPay(BaseApi):
         self.session = get_session(self.settings)
 
     def payment_types(self):
-        return PaymentTypes(session=self.session)
+        return PaymentTypes(session=self.session).post()
 
     def payment(self, **kwargs):
         return Payment(session=self.session, **kwargs)

@@ -167,7 +167,7 @@ class BaseApi(object):
 
 class PaymentTypes(BaseApi):
     uri = 'payment/gettypes'
-    http_methods_allowed = ['get']
+    http_methods_allowed = ['post']
 
 
 class Payment(BaseApi):

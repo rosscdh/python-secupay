@@ -14,13 +14,30 @@ DEV_SETTINGS = {
 subject = SecuPay(settings=DEV_SETTINGS)
 
 
+@httpretty.activate
 def test_payment_types():
-    assert subject.payment_types().__class__.__name__ == 'PaymentTypes'
-    assert subject.payment_types().uri == 'payment/gettypes'
+    expected_response = {
+                          "status": "ok",
+                          "errors": None,
+                          "data": [
+                            "debit",
+                            "creditcard",
+                            "prepay",
+                            "invoice",
+                            "subscription"
+                          ]
+                        }
 
-    # Must not allow post
+    httpretty.register_uri(httpretty.POST, "https://api-dist.secupay-ag.de/payment/gettypes",
+                           body=json.dumps(expected_response),
+                           content_type="application/json")
+    response = subject.payment_types()
+    assert response == expected_response
+
+def test_invalid_payment_types_request():
+    # Must not allow get requests
     with pytest.raises(Exception):
-        subject.payment_types().post()
+        subject.payment_types().get()
 
 
 def test_payment():
