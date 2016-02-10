@@ -55,7 +55,6 @@ def test_make_payment():
         },
         "errors": None
     }
-
     httpretty.register_uri(httpretty.POST, "https://api-dist.secupay-ag.de/payment/init",
                            body=json.dumps(expected_response),
                            content_type="application/json")
@@ -85,11 +84,34 @@ def test_make_payment():
     assert payment.send_data == expected_posted_data
 
 
+@httpretty.activate
 def test_payment_capture_preauthorized_payment():
-    assert subject.payment().capture_preauthorized_payment(token='preauthtoken').__class__.__name__ == 'CapturePreAuthorizedPayment'
-    assert subject.payment().capture_preauthorized_payment(token='preauthtoken').uri == 'payment/:hash/capture'
+    expected_response = {
+        "status": "ok",
+        "data": {
+            "status": "ok",
+        },
+        "errors": None
+    }
+    httpretty.register_uri(httpretty.POST, "https://api-dist.secupay-ag.de/payment/tujevzgobryk3303/capture",
+                           body=json.dumps(expected_response),
+                           content_type="application/json")
 
+    response = subject.payment().capture_preauthorized_payment(token='tujevzgobryk3303')
+    assert response == expected_response
 
+@httpretty.activate
 def test_payment_cancel_preauthorized_payment():
-    assert subject.payment().cancel_preauthorized_payment(token='preauthtoken').__class__.__name__ == 'CancelPreAuthorizedPayment'
-    assert subject.payment().cancel_preauthorized_payment(token='preauthtoken').uri == 'payment/:hash/cancel'
+    expected_response = {
+        "status": "ok",
+        "data": {
+            "status": "ok",
+        },
+        "errors": None
+    }
+    httpretty.register_uri(httpretty.POST, "https://api-dist.secupay-ag.de/payment/tujevzgobryk3303/cancel",
+                           body=json.dumps(expected_response),
+                           content_type="application/json")
+
+    response = subject.payment().cancel_preauthorized_payment(token='tujevzgobryk3303')
+    assert response == expected_response
