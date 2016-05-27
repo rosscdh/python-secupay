@@ -213,12 +213,14 @@ class Payment(BaseApi):
         uri = 'payment/:hash/capture'
 
     def capture_preauthorized_payment(self, token):
-        return self.CapturePreAuthorizedPayment(session=self.session,
-                                                hash=token).post()
+        service = self.CapturePreAuthorizedPayment(session=self.session,
+                                                   hash=token)
+        return service.post()
 
     class CancelPreAuthorizedPayment(BaseApi):
         uri = 'payment/:hash/cancel'
 
     def cancel_preauthorized_payment(self, token):
-        return self.CancelPreAuthorizedPayment(session=self.session,
-                                               hash=token).post()
+        service = self.CancelPreAuthorizedPayment(session=self.session,
+                                                  hash=token)
+        return service.post()
