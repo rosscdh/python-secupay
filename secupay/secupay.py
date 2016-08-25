@@ -206,8 +206,8 @@ class Payment(BaseApi):
     class Status(BaseApi):
         uri = 'payment/status'
 
-    def status(self):
-        return self.Status(session=self.session).post()
+    def status(self, hash):
+        return self.Status(session=self.session).post(hash=hash)
 
     class CapturePreAuthorizedPayment(BaseApi):
         uri = 'payment/:hash/capture'
